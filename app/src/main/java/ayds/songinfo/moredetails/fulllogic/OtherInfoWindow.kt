@@ -22,110 +22,100 @@ import java.util.Locale
 
 class OtherInfoWindow : Activity() {
     private var description: TextView? = null
-    private var dataBase: ArticleDatabase = databaseBuilder(this, ArticleDatabase::class.java, "database-articulos").build()
-
+    private lateinit var dataBase: ArticleDatabase
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_other_info)
         description = findViewById(R.id.textPane1)
-        open(intent.getStringExtra("artistName"))
+        dataBase = databaseBuilder(this,
+            ArticleDatabase::class.java,
+            "database-articulos"
+        ).build()
+        getArtistInfo(intent.getStringExtra("artistName"))
     }
 
-    private fun open(artist: String?) {
-        Thread {
-            dataBase!!.ArticleDao().insertArticle(ArticleEntity("test", "sarasa", ""))
-            Log.e("TEST ARTICULO EXISTENTE", "" + dataBase!!.ArticleDao().getArticleByArtistName("test"))
-            Log.e("TEST ARTICULO NO EXISTENTE", "" + dataBase!!.ArticleDao().getArticleByArtistName("nada"))
-        }.start()
-        getARtistInfo(artist)
-    }
+    private fun getArtistInfo(artistName: String?) {
 
-    private fun getARtistInfo(artistName: String?) {
 
         val retrofit = Retrofit.Builder()
             .baseUrl("https://ws.audioscrobbler.com/2.0/")
             .addConverterFactory(ScalarsConverterFactory.create())
             .build()
         val lastFMAPI = retrofit.create(LastFMAPI::class.java)
-        Log.e("TAG", "artistName $artistName")
+
         Thread {
-            val article = dataBase!!.ArticleDao().getArticleByArtistName(artistName!!)
-            var text = ""
-            if (article != null) { // exists in db
-                text = "[*]" + article.biography
-                val urlString = article.articleUrl
-                findViewById<View>(R.id.openUrlButton1).setOnClickListener {
-                    val intent = Intent(Intent.ACTION_VIEW)
-                    intent.setData(Uri.parse(urlString))
-                    startActivity(intent)
-                }
-            } else { // get from service
+            val article = dataBase.ArticleDao().getArticleByArtistName(artistName!!)
+            var textoContenido = ""
+            if (existsInDataBase(article)) {
+                textoContenido = "[*]" + article!!.biography
+                setearListener(article.articleUrl)
+            } else { //get from service
                 val callResponse: Response<String>
                 try {
                     callResponse = lastFMAPI.getArtistInfo(artistName).execute()
-                    Log.e("TAG", "JSON " + callResponse.body())
-                    val gson = Gson()
-                    val jobj = gson.fromJson(callResponse.body(), JsonObject::class.java)
-                    val artist = jobj["artist"].getAsJsonObject()
-                    val bio = artist["bio"].getAsJsonObject()
-                    val extract = bio["content"]
-                    val url = artist["url"]
-                    if (extract == null) {
-                        text = "No Results"
+                    val gsonInfo = Gson().fromJson(callResponse.body(), JsonObject::class.java)
+                    val artist = gsonInfo["artist"].getAsJsonObject()
+                    val biografia = artist["bio"].getAsJsonObject()
+                    val content = biografia["content"]
+                    val artistUrl = artist["url"].asString
+                    if (content == null) {
+                        textoContenido = "No Results"
                     } else {
-                        text = extract.asString.replace("\\n", "\n")
-                        text = textToHtml(text, artistName)
+                        textoContenido = content.asString.replace("\\n", "\n")
+                        textoContenido = textToHtml(textoContenido, artistName)
 
-
-                        // save to DB  <o/
-                        val text2 = text
                         Thread {
                             dataBase!!.ArticleDao().insertArticle(
                                 ArticleEntity(
-                                    artistName, text2, url.asString
+                                    artistName, textoContenido, artistUrl
                                 )
                             )
-                        }
-                            .start()
+                        }.start()
                     }
-                    val urlString = url.asString
-                    findViewById<View>(R.id.openUrlButton1).setOnClickListener {
-                        val intent = Intent(Intent.ACTION_VIEW)
-                        intent.setData(Uri.parse(urlString))
-                        startActivity(intent)
-                    }
-                } catch (e1: IOException) {
-                    Log.e("TAG", "Error $e1")
-                    e1.printStackTrace()
+                    setearListener(artistUrl)
+                } catch (exception: IOException) {
+                    Log.e("IOException", "Error $exception")
+                    exception.printStackTrace()
                 }
             }
-            val imageUrl =
-                "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Lastfm_logo.svg/320px-Lastfm_logo.svg.png"
-            Log.e("TAG", "Get Image from $imageUrl")
-            val finalText = text
-            runOnUiThread {
-                Picasso.get().load(imageUrl).into(findViewById<View>(R.id.imageView1) as ImageView)
-                description!!.text = Html.fromHtml(finalText)
-            }
+            setearImagenYContenido(textoContenido)
         }.start()
     }
 
-    companion object {
-        const val ARTIST_NAME_EXTRA = "artistName"
-        fun textToHtml(text: String, term: String?): String {
+    private fun setearImagenYContenido(textoContenido: String) {
+        val imageUrl =
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Lastfm_logo.svg/320px-Lastfm_logo.svg.png"
+        runOnUiThread {
+            Picasso.get().load(imageUrl).into(findViewById<View>(R.id.imageView1) as ImageView)
+            description!!.text = Html.fromHtml(textoContenido)
+        }
+    }
+
+    private fun setearListener(url: String) {
+        findViewById<View>(R.id.openUrlButton1).setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.setData(Uri.parse(url))
+            startActivity(intent)
+        }
+    }
+
+    private fun existsInDataBase(article: ArticleEntity?) = article != null
+
+    private fun textToHtml(textoContenido: String, artistName: String?): String {
             val builder = StringBuilder()
             builder.append("<html><div width=400>")
             builder.append("<font face=\"arial\">")
-            val textWithBold = text
+            val textWithBold = textoContenido
                 .replace("'", " ")
                 .replace("\n", "<br>")
                 .replace(
-                    "(?i)$term".toRegex(),
-                    "<b>" + term!!.uppercase(Locale.getDefault()) + "</b>"
+                    "(?i)$artistName".toRegex(),
+                    "<b>" + artistName!!.uppercase(Locale.getDefault()) + "</b>"
                 )
             builder.append(textWithBold)
             builder.append("</font></div></html>")
             return builder.toString()
         }
-    }
+
+
 }

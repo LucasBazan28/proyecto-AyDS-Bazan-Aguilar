@@ -9,6 +9,12 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.RoomDatabase
 
+/*
+
+CREEMOS QUE SE PUEDE SEPARAR DATABASE, ENTITY Y DAO, DE MANERA QUE QUEDE MÁS LEGIBLE,
+PERO NO LO HICIMOS PORQUE LA CONSIGNA DICE QUE NO HAY QUE CREAR SUBCLASES O MODIFICAR PAQUETES
+ */
+
 @Database(entities = [ArticleEntity::class], version = 1)
 abstract class ArticleDatabase : RoomDatabase() {
     abstract fun ArticleDao(): ArticleDao
