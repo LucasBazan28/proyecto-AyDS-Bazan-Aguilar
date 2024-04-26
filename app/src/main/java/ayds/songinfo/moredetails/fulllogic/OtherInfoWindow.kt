@@ -21,14 +21,14 @@ import java.util.Locale
 private const val ARTICLE_BD_NAME = "database-article"
 private const val LASTFM_BASE_URL = "https://ws.audioscrobbler.com/2.0/"
 private const val LASTFM_IMAGE_URL =
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Lastfm_logo.svg/320px-Lastfm_logo.svg.png"
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Lastfm_logo.svg/320px-Lastfm_logo.svg.png" //YA EN VIEW
 
-data class ArtistBiography(val artistName: String, val biography: String, val articleUrl: String)
+data class ArtistBiography(val artistName: String, val biography: String, val articleUrl: String) //Ya en presenter
 
 class OtherInfoWindow : Activity() {
-    private lateinit var articleTextView: TextView
-    private lateinit var openUrlButton: Button
-    private lateinit var lastFMImageView: ImageView
+    private lateinit var articleTextView: TextView //Ya en view
+    private lateinit var openUrlButton: Button  //Ya en view
+    private lateinit var lastFMImageView: ImageView //Ya en view
 
     private lateinit var articleDatabase: ArticleDatabase
 
@@ -40,11 +40,11 @@ class OtherInfoWindow : Activity() {
 
         initViewProperties()
         initArticleDatabase()
-        initLastFMAPI()
+        initLastFMAPI() //SvRepo
         getArtistInfoAsync()
     }
 
-    private fun initViewProperties() {
+    private fun initViewProperties() { //Ya en view
         articleTextView = findViewById(R.id.textPane1)
         openUrlButton = findViewById(R.id.openUrlButton1)
         lastFMImageView = findViewById(R.id.imageView1)
@@ -70,12 +70,12 @@ class OtherInfoWindow : Activity() {
         }.start()
     }
 
-    private fun getArtistInfo() {
+    private fun getArtistInfo() { //PRESENTER
         val artistBiography = getArtistInfoFromRepository()
-        updateUi(artistBiography)
+        updateUi(artistBiography) //Esto llama a la view
     }
 
-    private fun getArtistInfoFromRepository(): ArtistBiography {
+    private fun getArtistInfoFromRepository(): ArtistBiography { //PRESENTER LLAMA A MODEL?
         val artistName = getArtistName()
 
         val dbArticle = getArticleFromDB(artistName)
@@ -93,16 +93,16 @@ class OtherInfoWindow : Activity() {
         return artistBiography
     }
 
-    private fun ArtistBiography.markItAsLocal() = copy(biography = "[*]$biography")
+    private fun ArtistBiography.markItAsLocal() = copy(biography = "[*]$biography") //PRESENTER?
 
-    private fun getArticleFromDB(artistName: String): ArtistBiography? {
+    private fun getArticleFromDB(artistName: String): ArtistBiography? { //DataBaseRepository
         val artistEntity = articleDatabase.ArticleDao().getArticleByArtistName(artistName)
         return artistEntity?.let {
             ArtistBiography(artistName, artistEntity.biography, artistEntity.articleUrl)
         }
     }
 
-    private fun getArticleFromService(artistName: String): ArtistBiography {
+    private fun getArticleFromService(artistName: String): ArtistBiography { //ServiceRepository
 
         var artistBiography = ArtistBiography(artistName, "", "")
         try {
@@ -142,7 +142,7 @@ class OtherInfoWindow : Activity() {
         )
     }
 
-    private fun updateUi(artistBiography: ArtistBiography) {
+    private fun updateUi(artistBiography: ArtistBiography) {// Ya en view
         runOnUiThread {
             updateOpenUrlButton(artistBiography)
             updateLastFMLogo()
@@ -150,7 +150,7 @@ class OtherInfoWindow : Activity() {
         }
     }
 
-    private fun updateOpenUrlButton(artistBiography: ArtistBiography) {
+    private fun updateOpenUrlButton(artistBiography: ArtistBiography) { //Ya en view
         openUrlButton.setOnClickListener {
             navigateToUrl(artistBiography.articleUrl)
         }
@@ -162,19 +162,20 @@ class OtherInfoWindow : Activity() {
         startActivity(intent)
     }
 
-    private fun updateLastFMLogo() {
+    private fun updateLastFMLogo() { //Ya en view
         Picasso.get().load(LASTFM_IMAGE_URL).into(lastFMImageView)
     }
 
+   //PRESENTER
     private fun getArtistName() =
         intent.getStringExtra(ARTIST_NAME_EXTRA) ?: throw Exception("Missing artist name")
 
-    private fun updateArticleText(artistBiography: ArtistBiography) {
+    private fun updateArticleText(artistBiography: ArtistBiography) { //Ya en view
         val text = artistBiography.biography.replace("\\n", "\n")
         articleTextView.text = Html.fromHtml(textToHtml(text, artistBiography.artistName))
     }
 
-    private fun textToHtml(text: String, term: String?): String {
+    private fun textToHtml(text: String, term: String?): String { //Ya en view
         val builder = StringBuilder()
         builder.append("<html><div width=400>")
         builder.append("<font face=\"arial\">")
