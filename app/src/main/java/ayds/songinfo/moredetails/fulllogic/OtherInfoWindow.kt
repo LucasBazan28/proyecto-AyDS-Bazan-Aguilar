@@ -10,6 +10,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.room.Room.databaseBuilder
 import ayds.songinfo.R
+import ayds.songinfo.moredetails.fulllogic.Model.ArticleDatabase
+import ayds.songinfo.moredetails.fulllogic.Model.ArticleEntity
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.squareup.picasso.Picasso
@@ -55,7 +57,7 @@ class OtherInfoWindow : Activity() {
             databaseBuilder(this, ArticleDatabase::class.java, ARTICLE_BD_NAME).build()
     }
 
-    private fun initLastFMAPI() {
+    private fun initLastFMAPI() { //Ya en SVRepo
         val retrofit = Retrofit.Builder()
             .baseUrl(LASTFM_BASE_URL)
             .addConverterFactory(ScalarsConverterFactory.create())
@@ -64,13 +66,13 @@ class OtherInfoWindow : Activity() {
         lastFMAPI = retrofit.create(LastFMAPI::class.java)
     }
 
-    private fun getArtistInfoAsync() {
+    private fun getArtistInfoAsync() { //Ya en presenter
         Thread {
             getArtistInfo()
         }.start()
     }
 
-    private fun getArtistInfo() { //PRESENTER
+    private fun getArtistInfo() { //Ya enPRESENTER
         val artistBiography = getArtistInfoFromRepository()
         updateUi(artistBiography) //Esto llama a la view
     }
@@ -156,7 +158,7 @@ class OtherInfoWindow : Activity() {
         }
     }
 
-    private fun navigateToUrl(url: String) {
+    private fun navigateToUrl(url: String) { //Ya en view
         val intent = Intent(Intent.ACTION_VIEW)
         intent.setData(Uri.parse(url))
         startActivity(intent)
@@ -166,7 +168,7 @@ class OtherInfoWindow : Activity() {
         Picasso.get().load(LASTFM_IMAGE_URL).into(lastFMImageView)
     }
 
-   //PRESENTER
+   //Ya en PRESENTER
     private fun getArtistName() =
         intent.getStringExtra(ARTIST_NAME_EXTRA) ?: throw Exception("Missing artist name")
 
@@ -191,7 +193,7 @@ class OtherInfoWindow : Activity() {
         return builder.toString()
     }
 
-    companion object {
+    companion object { //Ya en presenter
         const val ARTIST_NAME_EXTRA = "artistName"
     }
 }

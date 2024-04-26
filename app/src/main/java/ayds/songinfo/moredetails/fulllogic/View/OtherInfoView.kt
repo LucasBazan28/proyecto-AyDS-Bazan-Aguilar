@@ -1,6 +1,6 @@
 package ayds.songinfo.moredetails.fulllogic.View
 
-import ayds.songinfo.moredetails.fulllogic.ArtistBiography
+import ayds.songinfo.moredetails.fulllogic.Presenter.ArtistBiography
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -15,13 +15,14 @@ import com.squareup.picasso.Picasso
 import java.util.Locale
 
 
+
 private const val LASTFM_IMAGE_URL =
     "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Lastfm_logo.svg/320px-Lastfm_logo.svg.png"
 class OtherInfoView : Activity(){
     private lateinit var articleTextView: TextView
     private lateinit var openUrlButton: Button
     private lateinit var lastFMImageView: ImageView
-    private var presenter = Presenter()
+    private var presenter = Presenter(intent)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
