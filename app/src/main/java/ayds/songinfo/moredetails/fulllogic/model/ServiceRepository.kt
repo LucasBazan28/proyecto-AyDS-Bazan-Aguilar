@@ -1,28 +1,14 @@
-package ayds.songinfo.moredetails.fulllogic.Model
+package ayds.songinfo.moredetails.fulllogic.model
 
 import androidx.room.Room.databaseBuilder
-import ayds.songinfo.moredetails.fulllogic.LastFMAPI
-import ayds.songinfo.moredetails.fulllogic.View.OtherInfoView
-import android.app.Activity
-import android.content.Intent
-import android.net.Uri
-import android.os.Bundle
-import android.text.Html
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import ayds.songinfo.R
-import ayds.songinfo.moredetails.fulllogic.Model.ArticleDatabase
-import ayds.songinfo.moredetails.fulllogic.Model.ArticleEntity
-import ayds.songinfo.moredetails.fulllogic.Model.UserRepository.Companion.ARTICLE_BD_NAME
-import ayds.songinfo.moredetails.fulllogic.Presenter.ArtistBiography
+import ayds.songinfo.moredetails.fulllogic.view.OtherInfoView
+import ayds.songinfo.moredetails.fulllogic.model.UserRepository.Companion.ARTICLE_BD_NAME
+import ayds.songinfo.moredetails.fulllogic.presenter.ArtistBiography
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.squareup.picasso.Picasso
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
-import java.util.Locale
 
 private const val LASTFM_BASE_URL = "https://ws.audioscrobbler.com/2.0/"
 class ServiceRepository(val view: OtherInfoView): UserRepository {

@@ -1,6 +1,6 @@
-package ayds.songinfo.moredetails.fulllogic.Model
+package ayds.songinfo.moredetails.fulllogic.model
 
-import ayds.songinfo.moredetails.fulllogic.Presenter.ArtistBiography
+import ayds.songinfo.moredetails.fulllogic.presenter.ArtistBiography
 
 
 interface UserRepository {

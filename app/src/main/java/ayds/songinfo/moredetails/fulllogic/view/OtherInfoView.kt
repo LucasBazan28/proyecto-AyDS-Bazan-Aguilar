@@ -1,6 +1,6 @@
-package ayds.songinfo.moredetails.fulllogic.View
+package ayds.songinfo.moredetails.fulllogic.view
 
-import ayds.songinfo.moredetails.fulllogic.Presenter.ArtistBiography
+import ayds.songinfo.moredetails.fulllogic.presenter.ArtistBiography
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -10,7 +10,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import ayds.songinfo.R
-import ayds.songinfo.moredetails.fulllogic.Presenter.*
+import ayds.songinfo.moredetails.fulllogic.presenter.*
 import com.squareup.picasso.Picasso
 import java.util.Locale
 
