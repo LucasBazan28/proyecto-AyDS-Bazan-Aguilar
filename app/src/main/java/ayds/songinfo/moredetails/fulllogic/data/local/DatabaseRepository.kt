@@ -1,7 +1,8 @@
-package ayds.songinfo.moredetails.fulllogic.model
+package ayds.songinfo.moredetails.fulllogic.data.local
 
 import androidx.room.Room.databaseBuilder
-import ayds.songinfo.moredetails.fulllogic.presenter.ArtistBiography
+import ayds.songinfo.moredetails.fulllogic.data.UserRepository
+import ayds.songinfo.moredetails.fulllogic.presententation.ArtistBiography
 import ayds.songinfo.moredetails.fulllogic.view.OtherInfoView
 
 class DatabaseRepository(val view: OtherInfoView) : UserRepository {
@@ -13,5 +14,12 @@ class DatabaseRepository(val view: OtherInfoView) : UserRepository {
         return artistEntity?.let {
             ArtistBiography(artistName, artistEntity.biography, artistEntity.articleUrl)
         }
+    }
+    public fun insertArtistIntoDB(artistBiography: ArtistBiography) {
+        articleDatabase.ArticleDao().insertArticle(
+            ArticleEntity(
+                artistBiography.artistName, artistBiography.biography, artistBiography.articleUrl
+            )
+        )
     }
 }

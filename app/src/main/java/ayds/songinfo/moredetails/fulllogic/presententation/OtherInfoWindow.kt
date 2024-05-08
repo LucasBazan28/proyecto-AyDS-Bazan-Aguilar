@@ -1,4 +1,4 @@
-package ayds.songinfo.moredetails.fulllogic
+package ayds.songinfo.moredetails.fulllogic.presententation
 
 import android.app.Activity
 import android.content.Intent
@@ -10,9 +10,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.room.Room.databaseBuilder
 import ayds.songinfo.R
-import ayds.songinfo.moredetails.fulllogic.model.ArticleDatabase
-import ayds.songinfo.moredetails.fulllogic.model.ArticleEntity
-import ayds.songinfo.moredetails.fulllogic.model.LastFMAPI
+import ayds.songinfo.moredetails.fulllogic.data.local.ArticleDatabase
+import ayds.songinfo.moredetails.fulllogic.data.local.ArticleEntity
+import ayds.songinfo.moredetails.fulllogic.data.external.LastFMAPI
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.squareup.picasso.Picasso
