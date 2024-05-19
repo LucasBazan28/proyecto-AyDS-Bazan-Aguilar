@@ -44,11 +44,12 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.picasso)
     implementation(libs.androidx.room)
-    testImplementation(project(":app"))
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
 
     ksp(libs.androidx.room.compiler)
     testImplementation(libs.junit)
+    //testImplementation(libs.mockk)
+    testImplementation("io.mockk:mockk:1.12.0") // Asegúrate de usar una versión estable y reciente
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
