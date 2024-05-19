@@ -1,4 +1,4 @@
-package ayds.songinfo.moredetails.fulllogic.domain
+package ayds.songinfo.moredetails.domain
 
 data class ArtistBiography(
     val artistName: String,

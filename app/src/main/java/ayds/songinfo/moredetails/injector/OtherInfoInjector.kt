@@ -1,17 +1,17 @@
-package ayds.songinfo.moredetails.fulllogic.injector
+package ayds.songinfo.moredetails.injector
 
 import android.content.Context
 import androidx.room.Room
-import ayds.songinfo.moredetails.fulllogic.data.OtherInfoRepositoryImpl
-import ayds.songinfo.moredetails.fulllogic.data.external.LastFMAPI
-import ayds.songinfo.moredetails.fulllogic.data.external.LastFMToArtistBiographyResolverImpl
-import ayds.songinfo.moredetails.fulllogic.data.external.OtherInfoServiceImpl
-import ayds.songinfo.moredetails.fulllogic.data.local.ArticleDatabase
-import ayds.songinfo.moredetails.fulllogic.data.local.OtherInfoLocalStorageImpl
-import ayds.songinfo.moredetails.fulllogic.presentation.ArtistBiographyDescriptionHelper
-import ayds.songinfo.moredetails.fulllogic.presentation.ArtistBiographyDescriptionHelperImpl
-import ayds.songinfo.moredetails.fulllogic.presentation.OtherInfoPresenter
-import ayds.songinfo.moredetails.fulllogic.presentation.OtherInfoPresenterImpl
+import ayds.songinfo.moredetails.data.OtherInfoRepositoryImpl
+import ayds.songinfo.moredetails.data.external.LastFMAPI
+import ayds.songinfo.moredetails.data.external.LastFMToArtistBiographyResolverImpl
+import ayds.songinfo.moredetails.data.external.OtherInfoServiceImpl
+import ayds.songinfo.moredetails.data.local.ArticleDatabase
+import ayds.songinfo.moredetails.data.local.OtherInfoLocalStorageImpl
+import ayds.songinfo.moredetails.presentation.ArtistBiographyDescriptionHelper
+import ayds.songinfo.moredetails.presentation.ArtistBiographyDescriptionHelperImpl
+import ayds.songinfo.moredetails.presentation.OtherInfoPresenter
+import ayds.songinfo.moredetails.presentation.OtherInfoPresenterImpl
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 

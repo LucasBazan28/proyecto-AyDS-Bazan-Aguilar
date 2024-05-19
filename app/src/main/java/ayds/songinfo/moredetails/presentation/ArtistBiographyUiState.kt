@@ -1,4 +1,4 @@
-package ayds.songinfo.moredetails.fulllogic.presentation
+package ayds.songinfo.moredetails.presentation
 
 data class ArtistBiographyUiState(
     val artistName: String,

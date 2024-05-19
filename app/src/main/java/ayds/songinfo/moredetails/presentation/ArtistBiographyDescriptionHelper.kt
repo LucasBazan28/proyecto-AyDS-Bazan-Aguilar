@@ -1,6 +1,6 @@
-package ayds.songinfo.moredetails.fulllogic.presentation
+package ayds.songinfo.moredetails.presentation
 
-import ayds.songinfo.moredetails.fulllogic.domain.ArtistBiography
+import ayds.songinfo.moredetails.domain.ArtistBiography
 import java.util.Locale
 
 interface ArtistBiographyDescriptionHelper {

@@ -1,6 +1,6 @@
-package ayds.songinfo.moredetails.fulllogic.data.local
+package ayds.songinfo.moredetails.data.local
 
-import ayds.songinfo.moredetails.fulllogic.domain.ArtistBiography
+import ayds.songinfo.moredetails.domain.ArtistBiography
 
 interface OtherInfoLocalStorage {
     fun getArticle(artistName: String): ArtistBiography?
