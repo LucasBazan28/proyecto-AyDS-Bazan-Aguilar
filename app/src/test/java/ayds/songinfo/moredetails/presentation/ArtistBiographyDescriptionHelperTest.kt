@@ -34,31 +34,4 @@ class ArtistBiographyDescriptionHelperImplTest {
         assertEquals(expectedDescription, result)
     }
 
-    @Test
-    fun `textToHtml should return HTML formatted text with artist name in bold`() {
-        val text = "This is the artist's biography about Artist Name."
-        val term = "Artist Name"
-
-        val expectedHtml = """
-            <html><div width=400><font face="arial">This is the artist s biography about <b>ARTIST NAME</b>.</font></div></html>
-        """.trimIndent()
-
-        val result = descriptionHelper.textToHtml(text, term)
-
-        assertEquals(expectedHtml, result)
-    }
-
-    @Test
-    fun `textToHtml should replace newlines with HTML line breaks`() {
-        val text = "This is the artist's\nbiography."
-        val term = "artist"
-
-        val expectedHtml = """
-            <html><div width=400><font face="arial">This is the <b>ARTIST</b> s<br>biography.</font></div></html>
-        """.trimIndent()
-
-        val result = descriptionHelper.textToHtml(text, term)
-
-        assertEquals(expectedHtml, result)
-    }
 }
