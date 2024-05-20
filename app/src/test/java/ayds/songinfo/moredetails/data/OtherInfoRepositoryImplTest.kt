@@ -13,7 +13,7 @@ import org.junit.Test
 class OtherInfoRepositoryImplTest {
 
     private val otherInfoLocalStorage: OtherInfoLocalStorage = mockk(relaxUnitFun = true)
-    private val otherInfoService: OtherInfoService = mockk(relaxUnitFun = true) //ver si hay q poner relax solo
+    private val otherInfoService: OtherInfoService = mockk()
 
 
     private val otherInfoRepository: OtherInfoRepository =
@@ -58,14 +58,5 @@ class OtherInfoRepositoryImplTest {
         assertEquals(false, result.isLocallyStored)
         verify(exactly = 0) { otherInfoLocalStorage.insertArtist(emptyBiography) }
     }
-    /*
-    @Test
-    fun `given service exception should return empty artist biography`() {
-        every { otherInfoLocalStorage.getArticle("Artist Name") } returns null
-        every { otherInfoService.getArticle("Artist Name") } throws mockk<Exception>()
 
-        val result = otherInfoRepository.getArtistInfo("Artist Name")
-
-        assertEquals(ArtistBiography("Artist Name", "", isLocallyStored = false), result)
-    }*/
 }

@@ -48,8 +48,7 @@ dependencies {
 
     ksp(libs.androidx.room.compiler)
     testImplementation(libs.junit)
-    //testImplementation(libs.mockk)
-    testImplementation("io.mockk:mockk:1.12.0") // Asegúrate de usar una versión estable y reciente
+    testImplementation(libs.mockk)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
