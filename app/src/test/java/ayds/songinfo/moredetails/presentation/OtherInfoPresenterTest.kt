@@ -10,9 +10,9 @@ import org.junit.Test
 class OtherInfoPresenterTest {
 
     private val repository: OtherInfoRepository = mockk()
-    private val lastFMDescriptionHelper: LastFMDescriptionHelper = mockk()
+    private val cardDescriptionHelper: CardDescriptionHelper = mockk()
 
-    private val presenter: OtherInfoPresenter = OtherInfoPresenterImpl(repository, lastFMDescriptionHelper)
+    private val presenter: OtherInfoPresenter = OtherInfoPresenterImpl(repository, cardDescriptionHelper)
 
     @Test
     fun `on getArtistInfo it should notify the UI state`() {
@@ -21,10 +21,10 @@ class OtherInfoPresenterTest {
         every {repository.getArtistInfo("ArtistName")} returns card
         every {card.artistName} returns "ArtistName"
         every {card.infoUrl} returns "Url"
-        every { lastFMDescriptionHelper.getDescription(card) } returns "formatted biography"
+        every { cardDescriptionHelper.getDescription(card) } returns "formatted biography"
         every {card.source} returns "source"
         every {card.sourceLogoUrl} returns "sourceLogo"
-        val uiState = CardUiState(card.artistName, lastFMDescriptionHelper.getDescription(card), card.infoUrl, card.source, card.sourceLogoUrl)
+        val uiState = CardUiState(card.artistName, cardDescriptionHelper.getDescription(card), card.infoUrl, card.source, card.sourceLogoUrl)
 
 
         val artistBiographyTester: (CardUiState) -> Unit = mockk(relaxed = true)

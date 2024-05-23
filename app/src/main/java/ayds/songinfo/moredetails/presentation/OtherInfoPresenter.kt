@@ -13,7 +13,7 @@ interface OtherInfoPresenter {
 
 internal class OtherInfoPresenterImpl(
     private val repository: OtherInfoRepository,
-    private val lastFMDescriptionHelper: LastFMDescriptionHelper
+    private val cardDescriptionHelper: CardDescriptionHelper
 ) : OtherInfoPresenter {
 
     override val cardObservable = Subject<CardUiState>()
@@ -28,7 +28,7 @@ internal class OtherInfoPresenterImpl(
 
     private fun Card.toUiState() = CardUiState(
         artistName,
-        lastFMDescriptionHelper.getDescription(this),
+        cardDescriptionHelper.getDescription(this),
         infoUrl,
         source,
         sourceLogoUrl
