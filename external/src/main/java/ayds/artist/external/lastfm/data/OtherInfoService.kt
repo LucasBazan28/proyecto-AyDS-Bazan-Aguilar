@@ -1,6 +1,5 @@
-package ayds.songinfo.moredetails.data.external
+package ayds.artist.external.lastfm.data
 
-import ayds.songinfo.moredetails.domain.ArtistBiography
 import java.io.IOException
 
 interface OtherInfoService {

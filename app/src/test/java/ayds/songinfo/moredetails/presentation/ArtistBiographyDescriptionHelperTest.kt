@@ -1,37 +1,83 @@
 package ayds.songinfo.moredetails.presentation
 
 import ayds.songinfo.moredetails.domain.ArtistBiography
-import org.junit.Assert.assertEquals
+import org.junit.Assert
 import org.junit.Test
 
-class ArtistBiographyDescriptionHelperImplTest {
 
-    private val descriptionHelper = ArtistBiographyDescriptionHelperImpl()
+class ArtistBiographyDescriptionHelperTest {
+
+    private val artistBiographyDescriptionHelper: ArtistBiographyDescriptionHelper =
+        ArtistBiographyDescriptionHelperImpl()
 
     @Test
-    fun `getDescription should return formatted HTML description with prefix for locally stored artist`() {
-        val artistBiography = ArtistBiography("Artist Name", "This is the artist's biography.", "url", true)
+    fun `on local stored artist should return biography`() {
+        val artistBiography = ArtistBiography("artist", "biography", "url", true)
 
-        val expectedDescription = """
-            <html><div width=400><font face="arial">[*]This is the artist s biography.</font></div></html>
-        """.trimIndent()
+        val result = artistBiographyDescriptionHelper.getDescription(artistBiography)
 
-        val result = descriptionHelper.getDescription(artistBiography)
-
-        assertEquals(expectedDescription, result)
+        Assert.assertEquals(
+            "<html><div width=400><font face=\"arial\">[*]biography</font></div></html>",
+            result
+        )
     }
 
     @Test
-    fun `getDescription should return formatted HTML description without prefix for non-locally stored artist`() {
-        val artistBiography = ArtistBiography("Artist Name", "This is the artist's biography.", "url", false)
+    fun `on no local stored artist should return biography`() {
+        val artistBiography = ArtistBiography("artist", "biography", "url", false)
 
-        val expectedDescription = """
-            <html><div width=400><font face="arial">This is the artist s biography.</font></div></html>
-        """.trimIndent()
+        val result = artistBiographyDescriptionHelper.getDescription(artistBiography)
 
-        val result = descriptionHelper.getDescription(artistBiography)
+        Assert.assertEquals(
+            "<html><div width=400><font face=\"arial\">biography</font></div></html>",
+            result
+        )
+    }
+    @Test
+    fun `should remove apostrophes`() {
+        val artistBiography = ArtistBiography("artist", "biography'n", "url", false)
 
-        assertEquals(expectedDescription, result)
+        val result = artistBiographyDescriptionHelper.getDescription(artistBiography)
+
+        Assert.assertEquals(
+            "<html><div width=400><font face=\"arial\">biography n</font></div></html>",
+            result
+        )
+    }
+
+    @Test
+    fun `should fix on double slash`() {
+        val artistBiography = ArtistBiography("artist", "biography\\n", "url", false)
+
+        val result = artistBiographyDescriptionHelper.getDescription(artistBiography)
+
+        Assert.assertEquals(
+            "<html><div width=400><font face=\"arial\">biography<br></font></div></html>",
+            result
+        )
+    }
+
+    @Test
+    fun `should map break lines`() {
+        val artistBiography = ArtistBiography("artist", "biography\n", "url", false)
+
+        val result = artistBiographyDescriptionHelper.getDescription(artistBiography)
+
+        Assert.assertEquals(
+            "<html><div width=400><font face=\"arial\">biography<br></font></div></html>",
+            result
+        )
+    }
+    @Test
+    fun `should set artist name bold`() {
+        val artistBiography = ArtistBiography("artist", "biography artist", "url", false)
+
+        val result = artistBiographyDescriptionHelper.getDescription(artistBiography)
+
+        Assert.assertEquals(
+            "<html><div width=400><font face=\"arial\">biography <b>ARTIST</b></font></div></html>",
+            result
+        )
     }
 
 }
