@@ -1,8 +1,9 @@
 package ayds.songinfo.moredetails.data
 
-import ayds.songinfo.moredetails.data.external.OtherInfoService
+import ayds.artist.external.lastfm.data.LastFMArticle
+import ayds.artist.external.lastfm.data.OtherInfoService
 import ayds.songinfo.moredetails.data.local.OtherInfoLocalStorage
-import ayds.songinfo.moredetails.domain.ArtistBiography
+import ayds.songinfo.moredetails.domain.Card
 import ayds.songinfo.moredetails.domain.OtherInfoRepository
 import io.mockk.every
 import io.mockk.mockk
@@ -22,12 +23,12 @@ class OtherInfoRepositoryImplTest {
 
     @Test
     fun `given existing artist in local storage should return local artist biography`() {
-        val artistBiography = ArtistBiography("Artist Name", "Biography", "Url", isLocallyStored = false)
-        every { otherInfoLocalStorage.getArticle("Artist Name") } returns artistBiography
+        val card = Card("Artist Name", "Biography", "Url", "Source", "SourceLogo", isLocallyStored = false)
+        every { otherInfoLocalStorage.getArticle("Artist Name") } returns card
 
         val result = otherInfoRepository.getArtistInfo("Artist Name")
 
-        assertEquals(artistBiography, result)
+        assertEquals(card, result)
         assertEquals(true, result.isLocallyStored) //verify {artistBiography.markItAsLocal()}
         //Con verify verificamos que realmente se llame al metodo markItAsLocal(), con el otro solo comparamos
 
@@ -35,28 +36,30 @@ class OtherInfoRepositoryImplTest {
 
     @Test
     fun `given non existing artist in local storage should fetch from service and store locally`() {
-        val artistBiography = ArtistBiography("Artist Name", "Biography", "Url", isLocallyStored = false)
+        val lastFMArticle = LastFMArticle("Artist Name", "Biography", "Url")
         every { otherInfoLocalStorage.getArticle("Artist Name") } returns null
-        every { otherInfoService.getArticle("Artist Name") } returns artistBiography
+        every { otherInfoService.getArticle("Artist Name") } returns lastFMArticle
+        val card = Card(lastFMArticle.artistName, lastFMArticle.biography, lastFMArticle.articleUrl, "LastFM", "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Lastfm_logo.svg/320px-Lastfm_logo.svg.png", false)
 
         val result = otherInfoRepository.getArtistInfo("Artist Name")
 
-        assertEquals(artistBiography, result)
+        assertEquals(card, result)
         assertEquals(false, result.isLocallyStored)
-        verify { otherInfoLocalStorage.insertArtist(artistBiography) }
+        verify { otherInfoLocalStorage.insertArtist(card) }
     }
 
     @Test
     fun `given non existing artist in local storage and empty biography from service should not store locally`() {
-        val emptyBiography = ArtistBiography("Artist Name", "", "Url", isLocallyStored = false)
+        val lastFMArticle = LastFMArticle("Artist Name", "", "Url")
         every { otherInfoLocalStorage.getArticle("Artist Name") } returns null
-        every { otherInfoService.getArticle("Artist Name") } returns emptyBiography
+        every { otherInfoService.getArticle("Artist Name") } returns lastFMArticle
+        val card = Card(lastFMArticle.artistName, lastFMArticle.biography, lastFMArticle.articleUrl, "LastFM", "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Lastfm_logo.svg/320px-Lastfm_logo.svg.png", false)
 
         val result = otherInfoRepository.getArtistInfo("Artist Name")
 
-        assertEquals(emptyBiography, result)
+        assertEquals(card, result)
         assertEquals(false, result.isLocallyStored)
-        verify(exactly = 0) { otherInfoLocalStorage.insertArtist(emptyBiography) }
+        verify(exactly = 0) { otherInfoLocalStorage.insertArtist(card) }
     }
 
 }

@@ -14,6 +14,7 @@ import com.squareup.picasso.Picasso
 
 class OtherInfoActivity : Activity() {
     private lateinit var articleTextView: TextView
+    private lateinit var source: TextView
     private lateinit var openUrlButton: Button
     private lateinit var lastFMImageView: ImageView
 
@@ -36,8 +37,8 @@ class OtherInfoActivity : Activity() {
     }
 
     private fun observePresenter() {
-        presenter.artistBiographyObservable.subscribe { artistBiography ->
-            updateUi(artistBiography)   //como el observer es una interfaz funcional, podemos definir el único método abstracto que hay en ella con una lamba para
+        presenter.cardObservable.subscribe { card ->
+            updateUi(card)   //como el observer es una interfaz funcional, podemos definir el único método abstracto que hay en ella con una lamba para
                                          //implementar el update (la lambda pasa a ser el observador y el update queda reemplazado por updateUI). NOTA: las interfaces funcionales
                                         //son interfaces con un único método abstracto
         }
@@ -47,6 +48,7 @@ class OtherInfoActivity : Activity() {
         articleTextView = findViewById(R.id.textPane1)
         openUrlButton = findViewById(R.id.openUrlButton1)
         lastFMImageView = findViewById(R.id.imageView1)
+        source = findViewById(R.id.source1)
     }
 
     private fun getArtistInfoAsync() {
@@ -60,11 +62,12 @@ class OtherInfoActivity : Activity() {
         presenter.getArtistInfo(artistName)
     }
 
-    private fun updateUi(uiState: ArtistBiographyUiState) {
+    private fun updateUi(uiState: CardUiState) {
         runOnUiThread {
-            updateOpenUrlButton(uiState.articleUrl)
-            updateLastFMLogo(uiState.imageUrl)
+            updateOpenUrlButton(uiState.infoUrl)
+            updateCardLogo(uiState.sourceLogoUrl)
             updateArticleText(uiState.infoHtml)
+            updateSourceText("Source: "+uiState.source)
         }
     }
 
@@ -80,7 +83,7 @@ class OtherInfoActivity : Activity() {
         startActivity(intent)
     }
 
-    private fun updateLastFMLogo(url: String) {
+    private fun updateCardLogo(url: String) {
         Picasso.get().load(url).into(lastFMImageView)
     }
 
@@ -89,6 +92,10 @@ class OtherInfoActivity : Activity() {
 
     private fun updateArticleText(infoHtml: String) {
         articleTextView.text = Html.fromHtml(infoHtml)
+    }
+
+    private fun updateSourceText(articleSource: String) {
+        source.text = articleSource
     }
 
     companion object {

@@ -1,32 +1,34 @@
 package ayds.songinfo.moredetails.presentation
 
-import ayds.songinfo.moredetails.domain.ArtistBiography
+import ayds.songinfo.moredetails.domain.Card
 import ayds.songinfo.moredetails.domain.OtherInfoRepository
+import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Test
-import io.mockk.every
 
 class OtherInfoPresenterTest {
 
     private val repository: OtherInfoRepository = mockk()
-    private val artistBiographyDescriptionHelper: ArtistBiographyDescriptionHelper = mockk()
+    private val lastFMDescriptionHelper: LastFMDescriptionHelper = mockk()
 
-    private val presenter: OtherInfoPresenter = OtherInfoPresenterImpl(repository, artistBiographyDescriptionHelper)
+    private val presenter: OtherInfoPresenter = OtherInfoPresenterImpl(repository, lastFMDescriptionHelper)
 
     @Test
     fun `on getArtistInfo it should notify the UI state`() {
 
-        val artistBiography: ArtistBiography = mockk(relaxed = true)
-        every {repository.getArtistInfo("ArtistName")} returns artistBiography
-        every {artistBiography.artistName} returns "ArtistName"
-        every {artistBiography.articleUrl} returns "Url"
-        every { artistBiographyDescriptionHelper.getDescription(artistBiography) } returns "formatted biography"
-        val uiState = ArtistBiographyUiState(artistBiography.artistName, artistBiographyDescriptionHelper.getDescription(artistBiography), artistBiography.articleUrl)
+        val card: Card = mockk(relaxed = true)
+        every {repository.getArtistInfo("ArtistName")} returns card
+        every {card.artistName} returns "ArtistName"
+        every {card.infoUrl} returns "Url"
+        every { lastFMDescriptionHelper.getDescription(card) } returns "formatted biography"
+        every {card.source} returns "source"
+        every {card.sourceLogoUrl} returns "sourceLogo"
+        val uiState = CardUiState(card.artistName, lastFMDescriptionHelper.getDescription(card), card.infoUrl, card.source, card.sourceLogoUrl)
 
 
-        val artistBiographyTester: (ArtistBiographyUiState) -> Unit = mockk(relaxed = true)
-        presenter.artistBiographyObservable.subscribe {
+        val artistBiographyTester: (CardUiState) -> Unit = mockk(relaxed = true)
+        presenter.cardObservable.subscribe {
             artistBiographyTester(it)
         }
 
