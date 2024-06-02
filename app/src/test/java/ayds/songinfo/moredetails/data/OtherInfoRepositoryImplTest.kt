@@ -1,7 +1,7 @@
 package ayds.songinfo.moredetails.data
 
 import ayds.artist.external.lastfm.data.LastFMArticle
-import ayds.artist.external.lastfm.data.OtherInfoService
+import ayds.artist.external.lastfm.data.LastFmService
 import ayds.songinfo.moredetails.data.local.OtherInfoLocalStorage
 import ayds.songinfo.moredetails.domain.Card
 import ayds.songinfo.moredetails.domain.OtherInfoRepository
@@ -14,7 +14,7 @@ import org.junit.Test
 class OtherInfoRepositoryImplTest {
 
     private val otherInfoLocalStorage: OtherInfoLocalStorage = mockk(relaxUnitFun = true)
-    private val otherInfoService: OtherInfoService = mockk()
+    private val otherInfoService: LastFmService = mockk()
 
 
     private val otherInfoRepository: OtherInfoRepository =
@@ -24,7 +24,7 @@ class OtherInfoRepositoryImplTest {
     @Test
     fun `given existing artist in local storage should return local artist biography`() {
         val card = Card("Artist Name", "Biography", "Url", "Source", "SourceLogo", isLocallyStored = false)
-        every { otherInfoLocalStorage.getArticle("Artist Name") } returns card
+        every { otherInfoLocalStorage.getCards("Artist Name") } returns card
 
         val result = otherInfoRepository.getArtistInfo("Artist Name")
 
@@ -37,7 +37,7 @@ class OtherInfoRepositoryImplTest {
     @Test
     fun `given non existing artist in local storage should fetch from service and store locally`() {
         val lastFMArticle = LastFMArticle("Artist Name", "Biography", "Url")
-        every { otherInfoLocalStorage.getArticle("Artist Name") } returns null
+        every { otherInfoLocalStorage.getCards("Artist Name") } returns null
         every { otherInfoService.getArticle("Artist Name") } returns lastFMArticle
         val card = Card(lastFMArticle.artistName, lastFMArticle.biography, lastFMArticle.articleUrl, "LastFM", "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Lastfm_logo.svg/320px-Lastfm_logo.svg.png", false)
 
@@ -51,7 +51,7 @@ class OtherInfoRepositoryImplTest {
     @Test
     fun `given non existing artist in local storage and empty biography from service should not store locally`() {
         val lastFMArticle = LastFMArticle("Artist Name", "", "Url")
-        every { otherInfoLocalStorage.getArticle("Artist Name") } returns null
+        every { otherInfoLocalStorage.getCards("Artist Name") } returns null
         every { otherInfoService.getArticle("Artist Name") } returns lastFMArticle
         val card = Card(lastFMArticle.artistName, lastFMArticle.biography, lastFMArticle.articleUrl, "LastFM", "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Lastfm_logo.svg/320px-Lastfm_logo.svg.png", false)
 

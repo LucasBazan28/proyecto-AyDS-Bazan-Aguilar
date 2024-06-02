@@ -2,13 +2,13 @@ package ayds.artist.external.lastfm.data
 
 import java.io.IOException
 
-interface OtherInfoService {
+interface LastFmService {
     fun getArticle(artistName: String): LastFMArticle
 }
-internal class OtherInfoServiceImpl(
+internal class LastFmServiceImpl(
     private val lastFMAPI: LastFMAPI,
     private val lastFMToArtistBiographyResolver: LastFMToArtistBiographyResolver
-) : OtherInfoService {
+) : LastFmService {
 
     override fun getArticle(artistName: String): LastFMArticle {
 

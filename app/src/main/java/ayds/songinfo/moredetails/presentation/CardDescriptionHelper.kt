@@ -19,7 +19,7 @@ internal class CardDescriptionHelperImpl : CardDescriptionHelper {
 
     private fun getTextBiography(card: Card): String {
         val prefix = if (card.isLocallyStored) "[*]" else ""
-        val text = card.description.replace("\\n", "\n")
+        val text = card.text.replace("\\n", "\n")
         return "$prefix$text"
     }
 

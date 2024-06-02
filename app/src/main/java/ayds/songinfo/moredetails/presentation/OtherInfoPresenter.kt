@@ -6,7 +6,7 @@ import ayds.songinfo.moredetails.domain.Card
 import ayds.songinfo.moredetails.domain.OtherInfoRepository
 
 interface OtherInfoPresenter {
-    val cardObservable: Observable<CardUiState>
+    val cardObservable: List<Observable<CardUiState>>
     fun getArtistInfo(artistName: String)
 
 }
@@ -16,20 +16,25 @@ internal class OtherInfoPresenterImpl(
     private val cardDescriptionHelper: CardDescriptionHelper
 ) : OtherInfoPresenter {
 
-    override val cardObservable = Subject<CardUiState>()
-
+    override val cardObservable: MutableList<Subject<CardUiState>> = mutableListOf()
     override fun getArtistInfo(artistName: String) {
+
         val artistBiography = repository.getArtistInfo(artistName)
+        //artistBiography es una lista, entonces en vez de for hago uno por uno
+        //                                          (Leo el uiState y lo notifico)
 
         val uiState = artistBiography.toUiState()
 
-        cardObservable.notify(uiState)
+        for (card in cardObservable){
+            card.notify(uiState)
+        }
+        //cardObservable.notify(uiState) Esto notificaba a una sola card del nuevo uiState
     }
 
     private fun Card.toUiState() = CardUiState(
         artistName,
         cardDescriptionHelper.getDescription(this),
-        infoUrl,
+        url,
         source,
         sourceLogoUrl
     )

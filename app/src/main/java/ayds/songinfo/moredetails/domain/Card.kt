@@ -2,10 +2,14 @@ package ayds.songinfo.moredetails.domain
 
 data class Card(
     val artistName: String,
-    val description: String,
-    val infoUrl: String,
-    val source: String,
-    val sourceLogoUrl: String,
+    val text: String,
+    val url: String,
+    val source: CardSource,
 
     var isLocallyStored: Boolean = false
 )
+enum class CardSource{
+    LAST_FM,
+    WIKIPEDIA,
+    NY_TIMES
+}

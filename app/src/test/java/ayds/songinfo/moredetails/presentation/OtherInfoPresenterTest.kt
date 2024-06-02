@@ -20,11 +20,11 @@ class OtherInfoPresenterTest {
         val card: Card = mockk(relaxed = true)
         every {repository.getArtistInfo("ArtistName")} returns card
         every {card.artistName} returns "ArtistName"
-        every {card.infoUrl} returns "Url"
+        every {card.url} returns "Url"
         every { cardDescriptionHelper.getDescription(card) } returns "formatted biography"
         every {card.source} returns "source"
         every {card.sourceLogoUrl} returns "sourceLogo"
-        val uiState = CardUiState(card.artistName, cardDescriptionHelper.getDescription(card), card.infoUrl, card.source, card.sourceLogoUrl)
+        val uiState = CardUiState(card.artistName, cardDescriptionHelper.getDescription(card), card.url, card.source, card.sourceLogoUrl)
 
 
         val artistBiographyTester: (CardUiState) -> Unit = mockk(relaxed = true)

@@ -1,27 +1,34 @@
 package ayds.songinfo.moredetails.data.local
 
 import ayds.songinfo.moredetails.domain.Card
+import ayds.songinfo.moredetails.domain.CardSource
 
 interface OtherInfoLocalStorage {
-    fun getArticle(artistName: String): Card?
+    fun getCards(artistName: String): List<Card>?
     fun insertArtist(card: Card)
 }
-
 internal class OtherInfoLocalStorageImpl(
-    private val articleDatabase: ArticleDatabase,
+    private val cardDatabase: CardDatabase,
 ) : OtherInfoLocalStorage {
 
-    override fun getArticle(artistName: String): Card? {
-        val artistEntity = articleDatabase.ArticleDao().getArticleByArtistName(artistName)
-        return artistEntity?.let {
-            Card(artistName, artistEntity.biography, artistEntity.articleUrl, "LastFM", "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Lastfm_logo.svg/320px-Lastfm_logo.svg.png")
+    override fun getCards(artistName: String): List<Card>? {
+        val artistEntities = cardDatabase.CardDao().getCardByArtistName(artistName)
+        //getCardByArtistName puede devolver de 1 a 3 elementos, dependiendo si están los de los 3
+        return artistEntities?.map { artistEntity ->
+            Card(
+                artistName = artistName,
+                text = artistEntity.content,
+                url = artistEntity.url,
+                source = CardSource.valueOf(artistEntity.source.toUpperCase()),  // assuming source is a string that matches enum names
+                isLocallyStored = false  // Default value, you can modify as needed
+            )
         }
     }
-
     override fun insertArtist(card: Card) {
-        articleDatabase.ArticleDao().insertArticle(
-            ArticleEntity(
-                card.artistName, card.description, card.infoUrl
+
+        cardDatabase.CardDao().insertCard(
+            CardEntity(
+                card.artistName, card.text, card.url, card.source.ordinal
             )
         )
     }
