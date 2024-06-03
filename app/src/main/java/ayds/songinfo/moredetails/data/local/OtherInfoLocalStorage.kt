@@ -2,6 +2,7 @@ package ayds.songinfo.moredetails.data.local
 
 import ayds.songinfo.moredetails.domain.Card
 import ayds.songinfo.moredetails.domain.CardSource
+import ayds.songinfo.moredetails.presentation.SourceResolver
 
 interface OtherInfoLocalStorage {
     fun getCards(artistName: String): List<Card>?
@@ -12,14 +13,15 @@ internal class OtherInfoLocalStorageImpl(
 ) : OtherInfoLocalStorage {
 
     override fun getCards(artistName: String): List<Card>? {
-        val artistEntities = cardDatabase.CardDao().getCardByArtistName(artistName)
+        val cardEntities = cardDatabase.CardDao().getCardByArtistName(artistName)
         //getCardByArtistName puede devolver de 1 a 3 elementos, dependiendo si están los de los 3
-        return artistEntities?.map { artistEntity ->
+        val sourceResolver = SourceResolver()
+        return cardEntities?.map { cardEntity ->
             Card(
                 artistName = artistName,
-                text = artistEntity.content,
-                url = artistEntity.url,
-                source = CardSource.valueOf(artistEntity.source.toUpperCase()),  // assuming source is a string that matches enum names
+                text = cardEntity.content,
+                url = cardEntity.url,
+                source = sourceResolver.mapIntToCardSource(cardEntity.source),  // assuming source is a string that matches enum names
                 isLocallyStored = false  // Default value, you can modify as needed
             )
         }

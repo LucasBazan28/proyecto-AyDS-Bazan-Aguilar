@@ -5,6 +5,8 @@ import androidx.room.Room
 import ayds.artist.external.lastfm.data.LastFmService
 import ayds.artist.external.lastfm.injector.LastFMInjector
 import ayds.artist.external.newyorktimes.injector.NYTimesInjector
+import ayds.artist.external.wikipedia.injector.WikipediaInjector
+import ayds.observer.Subject
 import ayds.songinfo.moredetails.data.OtherInfoRepositoryImpl
 import ayds.songinfo.moredetails.data.external.Broker
 import ayds.songinfo.moredetails.data.external.proxy.*
@@ -28,22 +30,30 @@ object OtherInfoInjector {
             Room.databaseBuilder(context, CardDatabase::class.java, ARTICLE_BD_NAME).build()
 
         LastFMInjector.initService()
-        NYTimesInjector.i
 
-        val lastFmService = LastFMInjector.service
-        val nyTimesService =
+        val lastFmService = LastFMInjector.lastFmService
+        val nyTimesService = NYTimesInjector.nyTimesService
+        val wikipediaTrackService = WikipediaInjector.wikipediaTrackService
+
         val lastFMProxy = LastFMProxy(lastFmService)
-        val nyTimesProxy = NYTimesProxy()
-        val wikipediaProxy = WikipediaProxy()
+        val nyTimesProxy = NYTimesProxy(nyTimesService)
+        val wikipediaProxy = WikipediaProxy(wikipediaTrackService)
 
         val broker = Broker(lastFMProxy, nyTimesProxy, wikipediaProxy)
 
         val articleLocalStorage = OtherInfoLocalStorageImpl(cardDatabase)
 
-        val repository = OtherInfoRepositoryImpl(articleLocalStorage, LastFmService)
+        val repository = OtherInfoRepositoryImpl(articleLocalStorage, broker)
 
         val artistBiographyDescriptionHelper = CardDescriptionHelperImpl()
 
-        presenter = OtherInfoPresenterImpl(repository, artistBiographyDescriptionHelper)
+        val presenterImpl = OtherInfoPresenterImpl(repository, artistBiographyDescriptionHelper)
+
+        // Inicializar los Subject
+        repeat(3) { // Asumiendo que podemos tener hasta 3 observables
+            presenterImpl.cardObservable.add(Subject())
+        }
+
+        presenter = presenterImpl
     }
 }

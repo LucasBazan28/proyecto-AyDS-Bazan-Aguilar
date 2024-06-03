@@ -18,15 +18,20 @@ internal class OtherInfoPresenterImpl(
 
     override val cardObservable: MutableList<Subject<CardUiState>> = mutableListOf()
     override fun getArtistInfo(artistName: String) {
+        val cards = repository.getArtistInfo(artistName)
+        val uiStates = cards.map { it.toUiState() }
 
-        val artistBiography = repository.getArtistInfo(artistName)
-        //artistBiography es una lista, entonces en vez de for hago uno por uno
-        //                                          (Leo el uiState y lo notifico)
+        // Nos aseguramos de que ambas listas tengan el mismo tamaño antes de continuar
+        if (uiStates.size != cardObservable.size) {
+            throw IllegalStateException("The number of cards and cardObservable must be equal")
+        }
 
-        val uiState = artistBiography.toUiState()
+        for (i in cards.indices) {
+            val uiState = uiStates[i]
+            val observable = cardObservable[i]
 
-        for (card in cardObservable){
-            card.notify(uiState)
+            // Notificar el estado de la tarjeta a su correspondiente observable
+            observable.notify(uiState)
         }
         //cardObservable.notify(uiState) Esto notificaba a una sola card del nuevo uiState
     }
@@ -36,6 +41,5 @@ internal class OtherInfoPresenterImpl(
         cardDescriptionHelper.getDescription(this),
         url,
         source,
-        sourceLogoUrl
     )
 }
