@@ -15,8 +15,7 @@ internal class LastFMProxy(
                 text = lastFMArticle.biography,
                 url = lastFMArticle.articleUrl,
                 source = CardSource.LAST_FM,
-                logoUrl = lastFMArticle.sourceLogoUrl,
-                isLocallyStored = false
+                logoUrl = lastFMArticle.sourceLogoUrl
             )
         }
         return null

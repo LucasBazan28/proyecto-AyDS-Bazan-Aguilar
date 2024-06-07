@@ -7,26 +7,25 @@ import ayds.songinfo.moredetails.domain.OtherInfoRepository
 
 internal class OtherInfoRepositoryImpl(
     private val otherInfoLocalStorage: OtherInfoLocalStorage,
-    private val broker: OtherInfoBroker,
+    private val otherInfoBroker: OtherInfoBroker
 ) : OtherInfoRepository {
 
     override fun getArtistInfo(artistName: String): List<Card> {
-        val dbArticles = otherInfoLocalStorage.getCards(artistName)
-        //Acá pedir las 3 cards de la BD
+        val dbCard = otherInfoLocalStorage.getCard(artistName)
 
-        dbArticles.forEach { card ->
-            card.markItAsLocal()
+        if (dbCard.isNotEmpty()) {
+            return dbCard.apply { markItAsLocal() }
+        } else {
+            val cards = otherInfoBroker.getCards(artistName)
+
+            cards.forEach { otherInfoLocalStorage.insertCard(it) }
+
+            return cards
         }
-        //Me fijo cuales tengo (Según sources), pido todas por broker y luego combino.
-        val existingCardSources = dbArticles.map { it.source }.toSet()
-        val brokerCards = broker.getCards(artistName)
-        val actualBrokerCards = brokerCards.filter { it.source !in existingCardSources }
-
-        actualBrokerCards.forEach { otherInfoLocalStorage.insertArtist(it) }
-        return dbArticles + actualBrokerCards
     }
 
-    private fun Card.markItAsLocal() {
-        isLocallyStored = true
+    private fun List<Card>.markItAsLocal() {
+        this.forEach { it.isLocallyStored = true }
+
     }
 }

@@ -15,8 +15,7 @@ internal class WikipediaProxy(
                 text = wikiArticle.description,
                 url = wikiArticle.wikipediaURL,
                 logoUrl = wikiArticle.wikipediaLogoURL,
-                source = CardSource.WIKIPEDIA,
-                isLocallyStored = false
+                source = CardSource.WIKIPEDIA
             )
         } else {
             null

@@ -50,15 +50,15 @@ class OtherInfoActivity : Activity() {
 
     private fun observePresenter() {
         // Suscribir cada cardObservable individualmente
-            presenter.cardObservable.subscribe { description ->
-                updateUi(description) }
+        presenter.cardObservable.subscribe { description ->
+            updateUi(description) }
 
     }
-        //Como el observer es una interfaz funcional, podemos definir
-        // el único método abstracto que hay en ella con una lamba para
-        // implementar el update (la lambda pasa a ser el observador y
-        // el update queda reemplazado por updateUI). NOTA: las interfaces funcionales
-        // son interfaces con un único método abstracto
+    //Como el observer es una interfaz funcional, podemos definir
+    // el único método abstracto que hay en ella con una lamba para
+    // implementar el update (la lambda pasa a ser el observador y
+    // el update queda reemplazado por updateUI). NOTA: las interfaces funcionales
+    // son interfaces con un único método abstracto
 
 
     private fun initViewProperties() {

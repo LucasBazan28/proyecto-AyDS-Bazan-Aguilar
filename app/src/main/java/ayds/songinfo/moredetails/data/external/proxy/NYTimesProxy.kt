@@ -18,14 +18,12 @@ internal class NYTimesProxy (
                     text = nytimesArticle.info ?: "",
                     url = nytimesArticle.url,
                     logoUrl = NYT_LOGO_URL,
-                    source = CardSource.NY_TIMES,
-                    isLocallyStored = false
+                    source = CardSource.NY_TIMES
                 )
             }
-            else -> {
+            else -> null
                 // En caso de NYTimesArticle.EmptyArtistDataExternal u otros posibles casos
-                return null
-            }
+
         }
     }
 }
