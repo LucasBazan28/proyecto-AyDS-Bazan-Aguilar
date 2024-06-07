@@ -32,7 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
-                android:textSize="20sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/textPane1"
@@ -57,6 +57,13 @@
                 android:paddingTop="24dp"/>
 
             <TextView
+                android:id="@+id/source2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:textSize="16sp" />
+
+            <TextView
                 android:id="@+id/textPane2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -66,11 +73,11 @@
 
             <Button
                 android:id="@+id/openUrlButton2"
-                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                android:text="View Full Article" />
+                android:text="View Full Article"
+                android:visibility="visible" />
 
             <ImageView
                 android:id="@+id/imageView3"
@@ -78,6 +85,13 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
                 android:paddingTop="24dp"/>
+
+            <TextView
+                android:id="@+id/source3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/textPane3"
@@ -89,11 +103,11 @@
 
             <Button
                 android:id="@+id/openUrlButton3"
-                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                android:text="View Full Article" />
+                android:text="View Full Article"
+                android:visibility="visible" />
 
         </LinearLayout>
 

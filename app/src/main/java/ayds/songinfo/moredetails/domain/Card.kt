@@ -4,6 +4,7 @@ data class Card(
     val artistName: String,
     val text: String,
     val url: String,
+    val logoUrl: String,
     val source: CardSource,
 
     var isLocallyStored: Boolean = false

@@ -6,7 +6,7 @@ import ayds.songinfo.moredetails.domain.Card
 import ayds.songinfo.moredetails.domain.OtherInfoRepository
 
 interface OtherInfoPresenter {
-    val cardObservable: List<Observable<CardUiState>>
+    val cardObservable: Observable<CardsUiState>
     fun getArtistInfo(artistName: String)
 
 }
@@ -16,30 +16,23 @@ internal class OtherInfoPresenterImpl(
     private val cardDescriptionHelper: CardDescriptionHelper
 ) : OtherInfoPresenter {
 
-    override val cardObservable: MutableList<Subject<CardUiState>> = mutableListOf()
+    override val cardObservable = Subject<CardsUiState>()
     override fun getArtistInfo(artistName: String) {
         val cards = repository.getArtistInfo(artistName)
-        val uiStates = cards.map { it.toUiState() }
+        val uiState = cards.toUiState()
 
-        // Nos aseguramos de que ambas listas tengan el mismo tamaño antes de continuar
-        if (uiStates.size != cardObservable.size) {
-            throw IllegalStateException("The number of cards and cardObservable must be equal")
-        }
-
-        for (i in cards.indices) {
-            val uiState = uiStates[i]
-            val observable = cardObservable[i]
-
-            // Notificar el estado de la tarjeta a su correspondiente observable
-            observable.notify(uiState)
-        }
-        //cardObservable.notify(uiState) Esto notificaba a una sola card del nuevo uiState
+        cardObservable.notify(uiState)
     }
 
-    private fun Card.toUiState() = CardUiState(
-        artistName,
-        cardDescriptionHelper.getDescription(this),
-        url,
-        source,
+    private fun List<Card>.toUiState() = CardsUiState(
+        cards = map {
+            CardUiState(
+                artistName = it.artistName,
+                contentHtml = cardDescriptionHelper.getDescription(it),
+                url = it.url,
+                logoUrl = it.logoUrl,
+                source = it.source
+            )
+        }
     )
 }

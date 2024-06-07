@@ -13,11 +13,11 @@ private const val FOOTER = "</font></div></html>"
 internal class CardDescriptionHelperImpl : CardDescriptionHelper {
 
     override fun getDescription(card: Card): String {
-        val text = getTextBiography(card)
+        val text = getText(card)
         return textToHtml(text, card.artistName)
     }
 
-    private fun getTextBiography(card: Card): String {
+    private fun getText(card: Card): String {
         val prefix = if (card.isLocallyStored) "[*]" else ""
         val text = card.text.replace("\\n", "\n")
         return "$prefix$text"

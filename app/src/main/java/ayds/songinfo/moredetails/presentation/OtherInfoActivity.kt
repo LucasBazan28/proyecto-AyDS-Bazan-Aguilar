@@ -14,20 +14,21 @@ import ayds.songinfo.moredetails.injector.OtherInfoInjector
 import com.squareup.picasso.Picasso
 
 class OtherInfoActivity : Activity() {
-    private lateinit var lastFmArticleTextView: TextView
-    private lateinit var nyTimesArticleTextView: TextView
-    private lateinit var wikiArticleTextView: TextView
+    private lateinit var cardContent1TextView: TextView
+    private lateinit var cardContent2TextView: TextView
+    private lateinit var cardContent3TextView: TextView
 
-    private lateinit var source: TextView
-    private lateinit var sourceNYT: TextView
+    private lateinit var openUrl1Button: Button
+    private lateinit var openUrl2Button: Button
+    private lateinit var openUrl3Button: Button
 
-    private lateinit var openLastFmUrlButton: Button
-    private lateinit var openNYTUrlButton: Button
-    private lateinit var openWikiUrlButton: Button
+    private lateinit var source1ImageView: ImageView
+    private lateinit var sourceImage2View: ImageView
+    private lateinit var sourceImage3View: ImageView
 
-    private lateinit var lastFMImageView: ImageView
-    private lateinit var nyTimesImageView: ImageView
-    private lateinit var wikipediaImageView: ImageView
+    private lateinit var source1TextView: TextView
+    private lateinit var source2TextView: TextView
+    private lateinit var source3TextView: TextView
 
     private lateinit var presenter: OtherInfoPresenter
 
@@ -49,32 +50,33 @@ class OtherInfoActivity : Activity() {
 
     private fun observePresenter() {
         // Suscribir cada cardObservable individualmente
-        presenter.cardObservable.forEach { observable ->
-            observable.subscribe { uiState ->
-                updateUi(uiState)
-            }
-        }
+            presenter.cardObservable.subscribe { description ->
+                updateUi(description) }
+
+    }
         //Como el observer es una interfaz funcional, podemos definir
         // el único método abstracto que hay en ella con una lamba para
         // implementar el update (la lambda pasa a ser el observador y
         // el update queda reemplazado por updateUI). NOTA: las interfaces funcionales
         // son interfaces con un único método abstracto
-    }
+
 
     private fun initViewProperties() {
-        lastFmArticleTextView = findViewById(R.id.textPane1)
-        nyTimesArticleTextView = findViewById(R.id.textPane2)
-        wikiArticleTextView = findViewById(R.id.textPane3)
+        cardContent1TextView = findViewById(R.id.textPane1)
+        cardContent2TextView = findViewById(R.id.textPane2)
+        cardContent3TextView = findViewById(R.id.textPane3)
 
-        openLastFmUrlButton = findViewById(R.id.openUrlButton1)
-        openNYTUrlButton = findViewById(R.id.openUrlButton2)
-        openWikiUrlButton = findViewById(R.id.openUrlButton3)
+        openUrl1Button = findViewById(R.id.openUrlButton1)
+        openUrl2Button = findViewById(R.id.openUrlButton2)
+        openUrl3Button = findViewById(R.id.openUrlButton3)
 
-        lastFMImageView = findViewById(R.id.imageView1)
-        nyTimesImageView = findViewById(R.id.imageView2)
-        wikipediaImageView = findViewById(R.id.imageView3)
+        source1ImageView = findViewById(R.id.imageView1)
+        sourceImage2View = findViewById(R.id.imageView2)
+        sourceImage3View = findViewById(R.id.imageView3)
 
-        source = findViewById(R.id.source1)
+        source1TextView = findViewById(R.id.source1)
+        source2TextView = findViewById(R.id.source2)
+        source3TextView = findViewById(R.id.source3)
     }
 
     private fun getArtistInfoAsync() {
@@ -88,17 +90,37 @@ class OtherInfoActivity : Activity() {
         presenter.getArtistInfo(artistName)
     }
 
-    private fun updateUi(uiState: CardUiState) {
+    private fun updateUi(uiState: CardsUiState) {
         runOnUiThread {
-            updateOpenUrlButton(uiState.url)
-            //updateCardLogo(uiState.sourceLogoUrl)
-            updateArticleText(uiState.source, uiState.contentHtml)
-            updateSourceText("Source: "+uiState.source)
+            uiState.cards.getOrNull(0)?.let { updateCard1(it) }
+            uiState.cards.getOrNull(1)?.let { updateCard2(it) }
+            uiState.cards.getOrNull(2)?.let { updateCard3(it) }
         }
     }
 
-    private fun updateOpenUrlButton(url: String) {
-        openLastFmUrlButton.setOnClickListener {
+    private fun updateCard1(card: CardUiState) {
+        updateOpenUrlButton(openUrl1Button, card.url)
+        updateCardLogo(source1ImageView, card.logoUrl)
+        updateCardText(cardContent1TextView, card.contentHtml)
+        updateSourceText(source1TextView, card.source)
+    }
+
+    private fun updateCard2(card: CardUiState) {
+        updateOpenUrlButton(openUrl2Button, card.url)
+        updateCardLogo(sourceImage2View, card.logoUrl)
+        updateCardText(cardContent2TextView, card.contentHtml)
+        updateSourceText(source2TextView, card.source)
+    }
+
+    private fun updateCard3(card: CardUiState) {
+        updateOpenUrlButton(openUrl3Button, card.url)
+        updateCardLogo(sourceImage3View, card.logoUrl)
+        updateCardText(cardContent3TextView, card.contentHtml)
+        updateSourceText(source3TextView, card.source)
+    }
+
+    private fun updateOpenUrlButton(openUrlButton: Button, url: String) {
+        openUrlButton.setOnClickListener {
             navigateToUrl(url)
         }
     }
@@ -109,25 +131,24 @@ class OtherInfoActivity : Activity() {
         startActivity(intent)
     }
 
-    private fun updateCardLogo(url: String) {
-        Picasso.get().load(url).into(lastFMImageView)
-        //TODO Tambien para las otras dos
+    private fun updateCardLogo(sourceImageView: ImageView, url: String) {
+        Picasso.get().load(url).into(sourceImageView)
+    }
+
+    private fun updateCardText(cardContentTextView: TextView, infoHtml: String) {
+        cardContentTextView.text = Html.fromHtml(infoHtml)
     }
 
     private fun getArtistName() =
         intent.getStringExtra(ARTIST_NAME_EXTRA) ?: throw Exception("Missing artist name")
 
-    private fun updateArticleText(source: CardSource, infoHtml: String) {
-        val textView = when (source) {
-            CardSource.LAST_FM -> lastFmArticleTextView
-            CardSource.NY_TIMES -> nyTimesArticleTextView
-            CardSource.WIKIPEDIA -> wikiArticleTextView
-        }
-        textView.text = Html.fromHtml(infoHtml)
-    }
+    private fun updateSourceText(sourceTextView: TextView, source: CardSource) {
 
-    private fun updateSourceText(articleSource: String) {
-        source.text = articleSource
+        sourceTextView.text = when (source) {
+            CardSource.LAST_FM -> "Source: LastFM"
+            CardSource.NY_TIMES -> "Source: NewYorkTimes"
+            CardSource.WIKIPEDIA -> "Source: Wikipedia"
+        }
     }
 
     companion object {

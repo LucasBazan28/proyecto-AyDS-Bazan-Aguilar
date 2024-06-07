@@ -1,4 +1,4 @@
-package ayds.songinfo.moredetails.presentation
+package ayds.songinfo.moredetails.data.local
 
 import ayds.songinfo.moredetails.domain.CardSource
 

@@ -1,20 +1,18 @@
 package ayds.songinfo.moredetails.data.external
 
-import ayds.songinfo.moredetails.data.external.proxy.LastFMProxy
-import ayds.songinfo.moredetails.data.external.proxy.NYTimesProxy
-import ayds.songinfo.moredetails.data.external.proxy.WikipediaProxy
+import ayds.songinfo.moredetails.data.external.proxy.CardProxy
 import ayds.songinfo.moredetails.domain.Card
 
-class Broker(
-    private val lastFMProxy: LastFMProxy,
-    private val nyTimesProxy: NYTimesProxy,
-    private val wikipediaProxy: WikipediaProxy,
-) {
-    public fun getCardsList(artist: String): List<Card> {
-        return listOf(
-            wikipediaProxy.getCard(artist),
-            nyTimesProxy.getCard(artist),
-            lastFMProxy.getCard(artist)
-        )
+interface OtherInfoBroker {
+
+    fun getCards(artistName: String): List<Card>
+}
+internal class OtherInfoBrokerImpl(
+    private val otherInfoProxies: List<CardProxy>
+) : OtherInfoBroker {
+
+    override fun getCards(artistName: String): List<Card> {
+        return otherInfoProxies.mapNotNull { it.getCard(artistName) }
     }
+
 }
