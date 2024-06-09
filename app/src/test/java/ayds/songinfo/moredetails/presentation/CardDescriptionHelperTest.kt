@@ -1,6 +1,7 @@
 package ayds.songinfo.moredetails.presentation
 
 import ayds.songinfo.moredetails.domain.Card
+import ayds.songinfo.moredetails.domain.CardSource
 import org.junit.Assert
 import org.junit.Test
 
@@ -12,7 +13,7 @@ class CardDescriptionHelperTest {
 
     @Test
     fun `on local stored artist should return biography`() {
-        val card = Card("artist", "biography", "url", "source", "sourceLogo", true)
+        val card = Card("artist", "biography", "url", "source", CardSource.LAST_FM, true)
 
         val result = cardDescriptionHelper.getDescription(card)
 
@@ -24,7 +25,7 @@ class CardDescriptionHelperTest {
 
     @Test
     fun `on no local stored artist should return biography`() {
-        val card = Card("artist", "biography", "url", "source", "sourceLogo",false)
+        val card = Card("artist", "biography", "url", "source", CardSource.NY_TIMES,false)
 
         val result = cardDescriptionHelper.getDescription(card)
 
@@ -35,7 +36,7 @@ class CardDescriptionHelperTest {
     }
     @Test
     fun `should remove apostrophes`() {
-        val card = Card("artist", "biography'n", "url", "source", "sourceLogo",false)
+        val card = Card("artist", "biography'n", "url", "source", CardSource.NY_TIMES,false)
 
         val result = cardDescriptionHelper.getDescription(card)
 
@@ -47,7 +48,7 @@ class CardDescriptionHelperTest {
 
     @Test
     fun `should fix on double slash`() {
-        val card = Card("artist", "biography\\n", "url", "source", "sourceLogo",false)
+        val card = Card("artist", "biography\\n", "url", "source", CardSource.NY_TIMES,false)
 
         val result = cardDescriptionHelper.getDescription(card)
 
@@ -59,7 +60,7 @@ class CardDescriptionHelperTest {
 
     @Test
     fun `should map break lines`() {
-        val card = Card("artist", "biography\n", "url", "source", "sourceLogo",false)
+        val card = Card("artist", "biography\n", "url", "source", CardSource.NY_TIMES,false)
 
         val result = cardDescriptionHelper.getDescription(card)
 
@@ -70,7 +71,7 @@ class CardDescriptionHelperTest {
     }
     @Test
     fun `should set artist name bold`() {
-        val card = Card("artist", "biography artist", "url", "source", "sourceLogo",false)
+        val card = Card("artist", "biography artist", "url", "source", CardSource.NY_TIMES,false)
 
         val result = cardDescriptionHelper.getDescription(card)
 
